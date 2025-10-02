@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: #111;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+.envelope-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    perspective: 1000px;
+}
+
+.envelope {
+    width: 150px;
+    height: 100px;
+    background: #fff;
+    border: 3px solid #333;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    transition: transform 1s;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+.envelope.open {
+    transform: rotateX(-180deg);
+}
+
+.card {
+    width: 300px;
+    height: 200px;
+    border: 2px solid #8b5a2b;
+    border-radius: 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 20px;
+    color: #000;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    background-color: #ffc0cb;
+    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReu8N05lQzBKtVBBc3HPJqIk2eftz1fcq__CdGGCgkKBoM2mKhHJULF8BQNN9QkEjfVMo&usqp=CAU'), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcReu8N05lQzBKtVBBc3HPJqIk2eftz1fcq__CdGGCgkKBoM2mKhHJULF8BQNN9QkEjfVMo&usqp=CAU');
+    background-repeat: no-repeat, no-repeat;
+    background-position: top right, bottom left;
+    background-size: 50px 50px, 50px 50px;
+    transition: transform 1s, opacity 1s;
+    opacity: 0;
+    z-index: 3;
+}
+
+.card.show {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.flying-flower {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjKkUMvQ8bsIoNE41QJkaOxoYxdXQtEnTy8wVQfombgHc9UWJKC3GyNjM-1fhzhbI2idw&usqp=CAU') no-repeat center center;
+    background-size: cover;
+    pointer-events: none;
+    z-index: 4;
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="envelope-container">
+    <div class="envelope" onclick="openCard()">
+        ااعتذر مره ثانيه وتستاهليين اكثر من هيج ياحلوه الحلوات افتحي هاي الرساله 🎁 
+    </div>
+</div>
+
+<div class="card" id="card">
+    🎉 Happy Birthday! 🎂<br>
+    مهندستنه سندريلا
+كل عام وانتي بخير وان شاءالله ربي يجعل ايامج كلها عيد وفرح وسرور ع قلبج ويكتب الج بهذا العام الجديد سعادة متنتهي ورزق مينعد وصحه والعافيه وكل عام وانتِ اقرب بله وعلى طاعته ادوم ومره ثانيه وثالثه وعاشرة اني اعتذر ع تأخير بس اتمنى انو يفرحج هل شي البسيط ✨🤍 ✨
+</div>
+
+<script>
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+const points = [];
+for(let i=0;i<80;i++){
+    points.push({
+        x: Math.random()*width,
+        y: Math.random()*height,
+        dx: (Math.random()-0.5)*2,
+        dy: (Math.random()-0.5)*2,
+        radius: 1+Math.random()*3
+    });
+}
+
+function animate() {
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0,0,width,height);
+
+    points.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fillStyle = 'rgba(0,255,255,0.7)';
+        ctx.fill();
+
+        points.forEach(other=>{
+            const dx = p.x - other.x;
+            const dy = p.y - other.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 120){
+                ctx.beginPath();
+                ctx.moveTo(p.x,p.y);
+                ctx.lineTo(other.x,other.y);
+                ctx.strokeStyle = 'rgba(0,255,255,'+(1-dist/120)+')';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        });
+
+        p.x += p.dx;
+        p.y += p.dy;
+        if(p.x>width||p.x<0) p.dx*=-1;
+        if(p.y>height||p.y<0) p.dy*=-1;
+    });
+
+    requestAnimationFrame(animate);
+}
+animate();
+window.addEventListener('resize', ()=>{
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+});
+
+function openCard(){
+    const envelope = document.querySelector('.envelope');
+    envelope.classList.add('open');
+
+    const card = document.getElementById('card');
+    setTimeout(()=>{
+        card.classList.add('show');
+
+        for(let i=0;i<10;i++){
+            createFlyingFlower();
+        }
+    }, 800);
+}
+
+function createFlyingFlower(){
+    const flower = document.createElement('div');
+    flower.className = 'flying-flower';
+    flower.style.left = (width/2 + Math.random()*100-50) + 'px';
+    flower.style.top = (height/2 + Math.random()*50-25) + 'px';
+    document.body.appendChild(flower);
+
+    const angle = Math.random()*2*Math.PI;
+    const distance = 100 + Math.random()*100;
+    const duration = 2000 + Math.random()*1000;
+
+    let start = null;
+    function animateFlower(timestamp){
+        if(!start) start = timestamp;
+        const progress = (timestamp - start)/duration;
+        if(progress < 1){
+            flower.style.transform = `translate(${Math.cos(angle)*distance*progress}px, ${-Math.sin(angle)*distance*progress}px) rotate(${360*progress}deg)`;
+            requestAnimationFrame(animateFlower);
+        } else {
+            flower.remove();
+        }
+    }
+    requestAnimationFrame(animateFlower);
+}
+</script>
+
+</body>
+</html>

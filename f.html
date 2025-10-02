@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+    }
+    #overlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+    }
+    .button {
+        padding: 20px 40px;
+        background: #1abc9c;
+        color: white;
+        font-size: 24px;
+        border-radius: 12px;
+        cursor: pointer;
+        text-align: center;
+        transition: transform 0.2s;
+        z-index: 2;
+    }
+    .button:hover {
+        transform: scale(1.1);
+    }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div id="overlay">
+    <div class="button" onclick="window.location.href='f5.html'">
+        اعتذر ع تاخير ياسندريلا اضغطي هنا 🎉
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('bg');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+const lines = [];
+for (let i = 0; i < 50; i++) {
+    lines.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        dx: (Math.random() - 0.5) * 1.5,
+        dy: (Math.random() - 0.5) * 1.5,
+        length: 30 + Math.random() * 50
+    });
+}
+
+function animate() {
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.strokeStyle = '#0ff';
+    ctx.lineWidth = 1;
+
+    lines.forEach(line => {
+        ctx.beginPath();
+        ctx.moveTo(line.x, line.y);
+        ctx.lineTo(line.x + line.length, line.y + line.length);
+        ctx.stroke();
+
+        line.x += line.dx;
+        line.y += line.dy;
+
+        if(line.x > width || line.x < -line.length) line.dx *= -1;
+        if(line.y > height || line.y < -line.length) line.dy *= -1;
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>Happy Birthday
